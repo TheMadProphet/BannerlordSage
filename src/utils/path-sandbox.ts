@@ -14,7 +14,7 @@ export class PathSandbox {
 
     if (!fullPath.startsWith(this.#basePath)) {
       throw new Error(
-        `路径越界检测: "${relativePath}" 试图跳出安全的基础目录`
+        `Path boundary violation: "${relativePath}" attempted to escape the safe base directory`
       )
     }
     return fullPath

@@ -1,20 +1,20 @@
-# 依赖包
+# Dependencies
 node_modules/
 
-# 编译输出
+# Build output
 dist/
 
-# 运行日志
+# Runtime logs
 *.log
 
-# 环境变量
+# Environment variables
 .env
 
-# 游戏源码与 XML 数据 
+# Game source code and XML data
 dist/assets/Source/
 dist/assets/Xmls/
 
-# 本地 SQLite 索引数据库 
+# Local SQLite index database
 *.db
 *.sqlite
 *.sqlite3

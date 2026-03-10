@@ -2,80 +2,80 @@
 
 [![Bannerlord](https://img.shields.io/badge/Game-Bannerlord_II-8B0000?style=flat&logo=target)](https://www.taleworlds.com/en/Games/Bannerlord)
 [![ILSpy](https://img.shields.io/badge/Tool-ILSpy-blue?style=flat&logo=c-sharp)](https://github.com/icsharpcode/ILSpy)
-[![bun](https://img.shields.io/badge/Bun-%23000000.svg?style=flat&logo=bun&logoColor=white)](https://bun.com/) 
+[![bun](https://img.shields.io/badge/Bun-%23000000.svg?style=flat&logo=bun&logoColor=white)](https://bun.com/)
 [![ripgrep](https://img.shields.io/badge/ripgrep-%23000000.svg?style=flat&logo=rust&logoColor=white)](https://github.com/BurntSushi/ripgrep)
 
-一个提供《骑马与砍杀2：霸主》源代码搜索和数据浏览功能的 MCP 服务器。
+An MCP server providing source code search and data browsing for Mount & Blade II: Bannerlord.
 
-## 📖 前言
+## Foreword
 
-本项目受 [RimSage](https://github.com/realloon/rimsage) 启发，针对《骑马与砍杀 2：霸主》的源码结构、XML 数据以及 Harmony 补丁开发需求进行了重构与定制。
+This project is inspired by [RimSage](https://github.com/realloon/rimsage), restructured and customized for Mount & Blade II: Bannerlord's source code structure, XML data, and Harmony patch development needs.
 
-## 🛠️ 可用工具
+## Available Tools
 
-服务器提供以下工具，可供 AI 自动调用：
+The server provides the following tools for AI to call automatically:
 
-- `search_source` - 搜索霸主源代码。
-- `read_file` - 读取特定文件内容。
-- `list_directory` - 列出目录结构。
-- `search_xml` - 搜索 XML 数据文件。
-- `get_item_stats` - 获取装备与物品的属性数据。
-- `read_csharp_type` - 读取 C# 类/结构体/接口定义。
-- `generate_harmony_patch` - 生成 Harmony 补丁代码模板。
-- `trace_troop_tree` - 追踪兵种升级树与基础属性。
-- `read_gauntlet_ui` - 解析 UI 界面与 ViewModel 的绑定关系。
+- `search_source` - Search Bannerlord source code.
+- `read_file` - Read the contents of a specific file.
+- `list_directory` - List directory structure.
+- `search_xml` - Search XML data files.
+- `get_item_stats` - Get equipment and item attribute data.
+- `read_csharp_type` - Read C# class/struct/interface definitions.
+- `generate_harmony_patch` - Generate Harmony patch code templates.
+- `trace_troop_tree` - Trace troop upgrade trees and base attributes.
+- `read_gauntlet_ui` - Parse UI views and ViewModel bindings.
 
-> **示例指令：** “请调用 `read_csharp_type` 工具查一下 `MobileParty` 类，看看它里面有没有和移动速度 (Speed) 相关的属性？”
+> **Example prompt:** "Use `read_csharp_type` to look up the `MobileParty` class and check if it has any properties related to movement Speed."
 
 ---
 
-## 🚀 本地部署
+## Local Deployment
 
-### 1. 安装底层环境 (Windows)
+### 1. Install Prerequisites (Windows)
 
-在终端（PowerShell）中运行以下命令安装必要组件：
+Run the following commands in a terminal (PowerShell) to install the required components:
 
-- **安装 Bun 运行时：**
+- **Install Bun runtime:**
   ```powershell
   powershell -c "irm bun.sh/install.ps1 | iex"
   ```
-- **安装 Ripgrep ：**
+- **Install Ripgrep:**
   ```powershell
   winget install BurntSushi.ripgrep.MSVC
   ```
-（安装完后可以在终端输入 bun -v 和 rg --version 测试一下是否成功）。
-### 2. 初始化项目
+(After installation, you can verify by running `bun -v` and `rg --version` in your terminal.)
+### 2. Initialize the Project
 
-在项目根目录下运行：
+Run the following in the project root directory:
 ```bash
 bun install
 ```
 
-### 3. 准备数据结构 
+### 3. Prepare Data Structure
 
-请在项目根目录下手动创建以下文件夹：
+Manually create the following folders in the project root:
 - `dist/assets/Source/`
 - `dist/assets/Xmls/`
 
-### 4. 导入游戏数据
+### 4. Import Game Data
 
-- **C# 源代码**：使用 ILSpy 反编译游戏 DLL，将生成的“C# project (*.csproj)”项目文件放入 `dist/assets/Source/`。
-- **XML 数据**：将游戏 `Modules` 目录（如 `Native/ModuleData` 等）下的 XML 配置文件放入 `dist/assets/Xmls/`。
+- **C# source code**: Use ILSpy to decompile the game DLLs, and place the generated "C# project (*.csproj)" project files into `dist/assets/Source/`.
+- **XML data**: Copy the XML configuration files from the game's `Modules` directory (e.g., `Native/ModuleData`) into `dist/assets/Xmls/`.
 
-### 5. 构建索引
+### 5. Build the Index
 
-数据准备就绪后，运行以下命令生成本地 SQLite 数据库：
+Once data is ready, run the following commands to generate the local SQLite database:
 ```bash
 bun run src/scripts/index-csharp.ts
 bun run src/scripts/index-xml.ts
 ```
-> **💡 测试提示：** 索引完成后，你可以先在终端里单独输入 `bun run start` 测试一下服务器能不能正常启动。
+> **Tip:** After indexing is complete, you can test the server by running `bun run start` in the terminal.
 
-## 🤖 接入 AI (以 VS Code + Cline 为例)
+## Connecting to AI (VS Code + Cline example)
 
-1. 打开 VS Code 中的 Cline 插件。
-2. 点击底部的 **Manage MCP Servers**。
-3. 在 `cline_mcp_settings.json` 中添加配置（**请根据你的实际存放路径修改**）：
+1. Open the Cline extension in VS Code.
+2. Click **Manage MCP Servers** at the bottom.
+3. Add the following configuration to `cline_mcp_settings.json` (**modify the path to match your actual setup**):
 
 ```json
 {
@@ -87,19 +87,19 @@ bun run src/scripts/index-xml.ts
   }
 }
 ```
-如果显示
+If you see
 
 <img width="357" height="85" alt="image" src="https://github.com/user-attachments/assets/8a43f91f-2cb3-42fb-9e14-f66a54fedc82" />
 
-则配置完成
+then the configuration is complete.
 
 ---
 
-## ⚠️ 免责声明 (Disclaimer)
+## Disclaimer
 
-本项目及配套工具仅供个人学习、研究《骑马与砍杀2：霸主》游戏机制以及 Mod 开发交流使用。
+This project and its accompanying tools are intended solely for personal learning, researching Mount & Blade II: Bannerlord game mechanics, and Mod development discussion.
 
-1. 本项目**不包含、不提供**任何 TaleWorlds  官方的原始代码或数据文件。
-2. 请用户在拥有正版游戏的前提下使用本工具，并严格遵守官方的最终用户许可协议（EULA）。
-3. 请勿将通过本工具反编译或提取的游戏资产用于任何形式的商业牟利或侵权用途。
-4. 任何因不当使用游戏原始数据而引发的法律纠纷，均由使用者自行承担，与本项目及原作者无关。
+1. This project **does not include or provide** any original code or data files from TaleWorlds.
+2. Please use this tool only if you own a legitimate copy of the game, and strictly comply with the official End User License Agreement (EULA).
+3. Do not use any game assets decompiled or extracted through this tool for any form of commercial profit or copyright infringement.
+4. Any legal disputes arising from improper use of original game data are the sole responsibility of the user and are not related to this project or its original author.

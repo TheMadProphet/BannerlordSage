@@ -7,10 +7,10 @@ async function main() {
   const transport = new StdioServerTransport()
   await server.connect(transport)
 
-  console.error('🚀 BannerlordSage MCP 启动成功！正在等待 AI 连接...')
+  console.error('BannerlordSage MCP started successfully! Waiting for AI connection...')
 
   const cleanup = () => {
-    console.error('正在关闭服务器...')
+    console.error('Shutting down server...')
     closeDb()
     process.exit(0)
   }
@@ -22,6 +22,6 @@ async function main() {
 try {
   main()
 } catch (error) {
-  console.error('致命错误:', error)
+  console.error('Fatal error:', error)
   process.exit(1)
 }

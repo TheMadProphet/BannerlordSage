@@ -7,14 +7,14 @@ export async function listDirectory(sandbox: PathSandbox, relativePath: string =
   try {
     const fullPath = sandbox.validateAndResolve(relativePath)
     const files = await readdir(fullPath, { withFileTypes: true })
-    
+
     const formatted = files
       .map(f => (f.isDirectory() ? `${f.name}/` : f.name))
       .sort()
       .join('\n')
 
-    return { content: [{ type: 'text' as const, text: formatted || '目录为空' }] }
+    return { content: [{ type: 'text' as const, text: formatted || 'Directory is empty' }] }
   } catch (error) {
-    throw new Error(`无法列出目录: ${relativePath}`)
+    throw new Error(`Unable to list directory: ${relativePath}`)
   }
 }

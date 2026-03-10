@@ -3,7 +3,7 @@ import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
 import { z } from 'zod'
 import { PathSandbox } from './utils/path-sandbox'
 
-// 统一在顶部导入所有工具函数
+// Import all tool functions at the top
 import { readCsharpType } from './tools/read-csharp-type'
 import { searchSource } from './tools/search-source'
 import { readFile } from './tools/read-file'
@@ -14,115 +14,115 @@ import { getItemStats } from './tools/get-item-stats'
 import { generateHarmonyPatch } from './tools/generate-harmony-patch'
 import { readGauntletUi } from './tools/read-gauntlet-ui'
 
-// 初始化安全沙箱，指向你的源码根目录
-const sandbox = new PathSandbox('dist/assets') 
+// Initialize security sandbox pointing to the source root directory
+const sandbox = new PathSandbox('dist/assets')
 
 export const server = new McpServer({
   name: 'bannerlord-sage',
   version: '0.9.0',
 })
 
-// --- 1. C# 类型查询工具 (原 read_csharp_type) ---
+// --- 1. C# Type Lookup Tool ---
 server.registerTool(
   'read_csharp_type',
   {
-    description: '查询《骑马与砍杀2》C# 类的完整定义和源码。',
+    description: 'Look up the full definition and source code of a Bannerlord C# class.',
     inputSchema: {
-      typeName: z.string().describe('准确的类型名称 (如: "MobileParty", "Hero")。'),
+      typeName: z.string().describe('Exact type name (e.g., "MobileParty", "Hero").'),
     },
   },
   async ({ typeName }) => await readCsharpType(typeName),
 )
 
-// --- 2. 全文源码搜索工具 ---
+// --- 2. Full-Text Source Search Tool ---
 server.registerTool(
   'search_source',
   {
-    description: '在骑砍2源码中进行正则表达式全文搜索。',
+    description: 'Perform a regex full-text search across Bannerlord source code.',
     inputSchema: {
-      query: z.string().describe('搜索关键词或正则表达式'),
-      filePattern: z.string().optional().describe('文件名过滤，如 "*.cs"'),
+      query: z.string().describe('Search keyword or regex pattern'),
+      filePattern: z.string().optional().describe('File name filter, e.g., "*.cs"'),
     },
   },
   async ({ query, filePattern }) => await searchSource(sandbox, query, false, filePattern),
 )
 
-// --- 3. 读取指定文件工具 ---
+// --- 3. Read File Tool ---
 server.registerTool(
   'read_file',
   {
-    description: '读取具体的源码或 XML 文件内容。',
+    description: 'Read the contents of a specific source or XML file.',
     inputSchema: {
-      path: z.string().describe('相对于 dist/assets 的路径'),
-      startLine: z.number().optional().default(0).describe('起始行号'),
+      path: z.string().describe('Path relative to dist/assets'),
+      startLine: z.number().optional().default(0).describe('Starting line number'),
     },
   },
   async ({ path, startLine }) => await readFile(sandbox, path, startLine),
 )
 
-// --- 4. 列出目录工具 ---
+// --- 4. List Directory Tool ---
 server.registerTool(
   'list_directory',
   {
-    description: '查看源码或 XML 文件夹下的目录结构。',
+    description: 'View the directory structure under source or XML folders.',
     inputSchema: {
-      path: z.string().optional().default('').describe('文件夹相对路径'),
+      path: z.string().optional().default('').describe('Relative folder path'),
     },
   },
   async ({ path }) => await listDirectory(sandbox, path),
 )
 
-// --- 5. XML 数据查询工具 ---
+// --- 5. XML Data Search Tool ---
 server.registerTool(
   'search_xml',
   {
-    description: '在骑砍2的 XML 数据文件（兵种、物品、设置）中搜索关键词。',
-    inputSchema: { 
-      query: z.string().describe('搜索关键词') 
+    description: 'Search Bannerlord XML data files (troops, items, settings) by keyword.',
+    inputSchema: {
+      query: z.string().describe('Search keyword')
     },
   },
   async ({ query }) => await searchXml(query),
 )
 
-// --- 6. 兵种树追踪器 ---
+// --- 6. Troop Tree Tracer ---
 server.registerTool(
   'trace_troop_tree',
   {
-    description: '追踪骑砍2兵种的升级路线和基础属性。',
-    inputSchema: { characterId: z.string().describe('兵种 ID，如 vlandian_recruit') },
+    description: 'Trace Bannerlord troop upgrade paths and base attributes.',
+    inputSchema: { characterId: z.string().describe('Troop ID, e.g., vlandian_recruit') },
   },
   async ({ characterId }) => await traceTroopTree(characterId),
 )
 
-// --- 7. 装备属性提取器 ---
+// --- 7. Item Stats Extractor ---
 server.registerTool(
   'get_item_stats',
   {
-    description: '快速提取骑砍2装备/武器的核心数据面板。',
-    inputSchema: { itemId: z.string().describe('物品 ID，如 western_sword_t3') },
+    description: 'Quickly extract core stats for Bannerlord equipment/weapons.',
+    inputSchema: { itemId: z.string().describe('Item ID, e.g., western_sword_t3') },
   },
   async ({ itemId }) => await getItemStats(itemId),
 )
 
-// --- 8. Harmony 补丁生成器 ---
+// --- 8. Harmony Patch Generator ---
 server.registerTool(
   'generate_harmony_patch',
   {
-    description: '为骑砍2的 C# 方法自动生成 Harmony Prefix/Postfix 补丁代码模板。',
+    description: 'Auto-generate a Harmony Prefix/Postfix patch code template for a Bannerlord C# method.',
     inputSchema: {
-      className: z.string().describe('目标类名 (如 MobileParty)'),
-      methodName: z.string().describe('目标方法名 (如 CalculateSpeed)'),
+      className: z.string().describe('Target class name (e.g., MobileParty)'),
+      methodName: z.string().describe('Target method name (e.g., CalculateSpeed)'),
     },
   },
   async ({ className, methodName }) => await generateHarmonyPatch(className, methodName),
 )
 
-// --- 9. UI 界面解析器 ---
+// --- 9. UI Parser ---
 server.registerTool(
   'read_gauntlet_ui',
   {
-    description: '解析骑砍2的 Gauntlet UI XML，提取 ViewModel 需要绑定的 DataSource 和 Click 事件。',
-    inputSchema: { uiFileName: z.string().describe('UI 文件名 (如 InventoryScreen)') },
+    description: 'Parse Bannerlord Gauntlet UI XML to extract ViewModel DataSource bindings and Click events.',
+    inputSchema: { uiFileName: z.string().describe('UI file name (e.g., InventoryScreen)') },
   },
   async ({ uiFileName }) => await readGauntletUi(sandbox, uiFileName),
 )

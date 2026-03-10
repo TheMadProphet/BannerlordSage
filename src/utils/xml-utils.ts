@@ -1,7 +1,7 @@
 // src/utils/xml-utils.ts
 import { XMLParser, XMLBuilder } from 'fast-xml-parser'
 
-// 这里的配置极其重要：ignoreAttributes: false 保证了我们能读到骑砍 XML 里的 id="xxx" 等属性
+// Critical config: ignoreAttributes: false ensures we can read id="xxx" and other attributes in Bannerlord XML
 export const parser = new XMLParser({
   ignoreAttributes: false, 
   processEntities: false,

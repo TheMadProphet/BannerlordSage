@@ -5,9 +5,9 @@ import { defsPath, dbPath } from '../utils/env'
 import { Database } from 'bun:sqlite'
 
 async function main() {
-  console.log('正在索引 XML 文件...')
+  console.log('Indexing XML files...')
   const db = new Database(dbPath)
-  
+
   db.run(`
     CREATE TABLE IF NOT EXISTS xml_data (
       name TEXT,
@@ -33,9 +33,9 @@ async function main() {
     })
     fileCount++
   }
-  
+
   db.close()
-  console.log(`XML 索引完成！共处理了 ${fileCount} 个文件。`)
+  console.log(`XML indexing complete! Processed ${fileCount} files.`)
 }
 
 main().catch(console.error)
