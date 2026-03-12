@@ -5,7 +5,7 @@ import { PathSandbox } from '../utils/path-sandbox'
 const MAX_RESULT_LINES = 400
 
 export async function searchSource(sandbox: PathSandbox, query: string, caseSensitive: boolean = false, filePattern?: string) {
-  const args = ['--line-number', '--heading', '--color', 'never']
+  const args = ['--no-ignore', '--line-number', '--heading', '--color', 'never']
   if (caseSensitive) args.push('-s')
   else args.push('-i')
 
