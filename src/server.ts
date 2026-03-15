@@ -14,6 +14,7 @@ import { getItemStats } from './tools/get-item-stats'
 import { generateHarmonyPatch } from './tools/generate-harmony-patch'
 import { readGauntletUi } from './tools/read-gauntlet-ui'
 import { getCsharpTypeOverview } from './tools/get-csharp-type-overview'
+import { getCsharpMethod } from './tools/get-csharp-method'
 
 // Initialize security sandbox pointing to the source root directory
 const sandbox = new PathSandbox('dist/assets')
@@ -23,7 +24,7 @@ export const server = new McpServer({
   version: '0.9.0',
 })
 
-// --- 1. C# Type Lookup Tool ---
+// C# Type Lookup Tool
 server.registerTool(
   'read_csharp_type',
   {
@@ -35,7 +36,7 @@ server.registerTool(
   async ({ typeName }) => await readCsharpType(typeName),
 )
 
-// --- 2. C# Type Overview Tool ---
+// C# Type Overview Tool
 server.registerTool(
   'get_csharp_type_overview',
   {
@@ -47,7 +48,20 @@ server.registerTool(
   async ({ typeName }) => await getCsharpTypeOverview(typeName),
 )
 
-// --- 3. Full-Text Source Search Tool ---
+// C# Method Lookup
+server.registerTool(
+  'get_csharp_method',
+  {
+    description: 'Get the source code of a specific method, property, or constructor from a Bannerlord C# type.',
+    inputSchema: {
+      typeName: z.string().describe('Exact type name (e.g., "Hero", "MobileParty")'),
+      methodName: z.string().describe('Method, property, or constructor name (e.g., "GetTraitLevel")'),
+    },
+  },
+  async ({ typeName, methodName }) => await getCsharpMethod(typeName, methodName),
+)
+
+// Full-Text Source Search Tool
 server.registerTool(
   'search_source',
   {
@@ -60,7 +74,7 @@ server.registerTool(
   async ({ query, filePattern }) => await searchSource(sandbox, query, false, filePattern),
 )
 
-// --- 3. Read File Tool ---
+// Read File Tool
 server.registerTool(
   'read_file',
   {
@@ -73,7 +87,7 @@ server.registerTool(
   async ({ path, startLine }) => await readFile(sandbox, path, startLine),
 )
 
-// --- 4. List Directory Tool ---
+// List Directory Tool
 server.registerTool(
   'list_directory',
   {
@@ -85,7 +99,7 @@ server.registerTool(
   async ({ path }) => await listDirectory(sandbox, path),
 )
 
-// --- 5. XML Data Search Tool ---
+// XML Data Search Tool
 server.registerTool(
   'search_xml',
   {
@@ -97,7 +111,7 @@ server.registerTool(
   async ({ query }) => await searchXml(query),
 )
 
-// --- 6. Troop Tree Tracer ---
+// Troop Tree Tracer
 server.registerTool(
   'trace_troop_tree',
   {
@@ -107,7 +121,7 @@ server.registerTool(
   async ({ characterId }) => await traceTroopTree(characterId),
 )
 
-// --- 7. Item Stats Extractor ---
+// Item Stats Extractor
 server.registerTool(
   'get_item_stats',
   {
@@ -117,7 +131,7 @@ server.registerTool(
   async ({ itemId }) => await getItemStats(itemId),
 )
 
-// --- 8. Harmony Patch Generator ---
+// Harmony Patch Generator
 server.registerTool(
   'generate_harmony_patch',
   {
@@ -130,7 +144,7 @@ server.registerTool(
   async ({ className, methodName }) => await generateHarmonyPatch(className, methodName),
 )
 
-// --- 9. UI Parser ---
+// UI Parser
 server.registerTool(
   'read_gauntlet_ui',
   {
