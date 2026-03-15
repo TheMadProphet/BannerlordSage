@@ -81,10 +81,11 @@ server.registerTool(
     description: 'Read the contents of a specific source or XML file.',
     inputSchema: {
       path: z.string().describe('Path relative to dist/assets'),
-      startLine: z.number().optional().default(0).describe('Starting line number'),
+      startLine: z.number().optional().default(0).describe('Starting line number (0-based)'),
+      lineCount: z.number().optional().default(400).describe('Number of lines to read'),
     },
   },
-  async ({ path, startLine }) => await readFile(sandbox, path, startLine),
+  async ({ path, startLine, lineCount }) => await readFile(sandbox, path, startLine, lineCount),
 )
 
 // List Directory Tool
