@@ -13,6 +13,7 @@ import { traceTroopTree } from './tools/trace-troop-tree'
 import { getItemStats } from './tools/get-item-stats'
 import { generateHarmonyPatch } from './tools/generate-harmony-patch'
 import { readGauntletUi } from './tools/read-gauntlet-ui'
+import { getCsharpTypeOverview } from './tools/get-csharp-type-overview'
 
 // Initialize security sandbox pointing to the source root directory
 const sandbox = new PathSandbox('dist/assets')
@@ -34,7 +35,19 @@ server.registerTool(
   async ({ typeName }) => await readCsharpType(typeName),
 )
 
-// --- 2. Full-Text Source Search Tool ---
+// --- 2. C# Type Overview Tool ---
+server.registerTool(
+  'get_csharp_type_overview',
+  {
+    description: 'Get a compact overview of a Bannerlord C# type showing only method/property signatures with implementations collapsed.',
+    inputSchema: {
+      typeName: z.string().describe('Exact type name (e.g., "MobileParty", "Hero").'),
+    },
+  },
+  async ({ typeName }) => await getCsharpTypeOverview(typeName),
+)
+
+// --- 3. Full-Text Source Search Tool ---
 server.registerTool(
   'search_source',
   {

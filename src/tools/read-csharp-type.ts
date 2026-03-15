@@ -49,7 +49,7 @@ export async function readCsharpType(typeName: string) {
   return { content: [{ type: 'text' as const, text: output }] }
 }
 
-function extractCodeBlock(lines: string[], startLine: number) {
+export function extractCodeBlock(lines: string[], startLine: number) {
   let buffer: string[] = []
   let braceCount = 0
   let foundStart = false
@@ -102,7 +102,7 @@ function extractCodeBlock(lines: string[], startLine: number) {
 }
 
 // Auto-summary algorithm for overly long code
-function generateSignature(code: string): string {
+export function generateSignature(code: string): string {
   const lines = code.split('\n')
   const output: string[] = []
   let depth = 0
